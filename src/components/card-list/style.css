@@ -1,0 +1,20 @@
+.card-enter {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  opacity: 0;
+}
+.card-enter-active {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  opacity: 0;
+  transition: all 700ms ease-in;
+}
+.card-exit {
+  opacity: 1;
+}
+.card-exit-active {
+  opacity: 0;
+  transition: all 700ms ease-in;
+}

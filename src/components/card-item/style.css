@@ -1,0 +1,15 @@
+.card-cover {
+  width: 300px;
+  filter: drop-shadow(0 0 0.5px rgb(20, 19, 20));
+}
+
+.card-img {
+  height: 200px;
+  object-fit: cover;
+}
+
+.close-btn {
+  right: 0;
+  top: 0;
+  cursor: pointer;
+}
