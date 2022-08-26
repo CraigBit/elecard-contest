@@ -29,23 +29,29 @@ export const TreeView = () => {
       {isTreeLoading ? (
         <Loader />
       ) : (
-        <Tree showIcon={false} showLine selectable={false} className='m-5'>
+        <Tree
+          showIcon={false}
+          showLine
+          selectable={false}
+          expandAction='click'
+          className='m-5'>
           <TreeNode title='Root' key='0-0'>
             {tree.map((item, index) => {
+              const size = item.filesize;
+              const category = item.category;
+              const date = new Date(item.timestamp).toLocaleDateString('ru-RU');
               const path = `http://contest.elecard.ru/frontend_data/${item.image}`;
               const img = (
                 <a href={path} target='_blank' rel='noreferrer'>
                   <img src={path} alt='not found' style={imgStyle} />
                 </a>
               );
-              const category = item.category;
-              const date = new Date(item.timestamp).toLocaleDateString('ru-RU');
               return (
                 <TreeNode title={`Элемент ${index + 1}`} key={item.timestamp}>
                   <TreeNode title={date} key={`${index + 5}-0-0-0`} />
                   <TreeNode title={category} key={`0-${index + 5}-0-0`} />
                   <TreeNode title={img} key={`0-0-${index + 5}-0`} />
-                  <TreeNode title={item.filesize} key={`0-0-0-${index + 5}`} />
+                  <TreeNode title={size} key={`0-0-0-${index + 5}`} />
                 </TreeNode>
               );
             })}
