@@ -1,18 +1,44 @@
 import Container from 'react-bootstrap/Container';
+import { CardSort } from '../components/card-sort/CardSort';
 import { CardList } from '../components/card-list/CardList';
 import { CardItem } from '../components/card-item/CardItem';
 import { Pages } from '../ui/pagination/Pages';
-import { useState } from 'react';
-import { findByRegex } from '../utils/findByRegex';
-import { CardSort } from '../components/card-sort/CardSort';
+import { Loader } from '../ui/loader/Loader';
+import ItemService from '../api/ItemService';
+import { useState, useEffect } from 'react';
 import { useCards } from '../context/CardsContext';
+import { useFetching } from '../hooks/useFetching';
 
-export const CardView = ({ inc }) => {
+export const CardView = () => {
   const { cards, setCards } = useCards();
   const [currentPage, setCurrentPage] = useState(1);
+  const [resetCount, setResetCount] = useState(0);
 
   const limit = 12;
   const pages = Math.ceil(cards.length / limit);
+
+  const [fetchCards, isCardsLoading, cardError] = useFetching(async () => {
+    const response = await ItemService.getAll();
+    setCards(response);
+  });
+
+  // счетчик сброса фильтров и количества карточек
+  const increment = () => {
+    setResetCount(resetCount + 1);
+  };
+
+  useEffect(() => {
+    if (!localStorage.getItem('cardsArray')) {
+      fetchCards();
+    }
+  }, []);
+
+  // хук реагирует на счетчик сброса, срабатывает по нажатии на кнопку
+  useEffect(() => {
+    if (resetCount) {
+      fetchCards();
+    }
+  }, [resetCount]);
 
   const callbacks = {
     // Сменить страницу в пагинации
@@ -23,37 +49,6 @@ export const CardView = ({ inc }) => {
       setCards(
         cards.filter((item) => item.timestamp !== deletedItem.timestamp)
       ),
-
-    // Сортировки
-    // По дате
-    sortByDate: () => {
-      setCards([...cards].sort((a, b) => a.timestamp - b.timestamp));
-      setCurrentPage(1);
-    },
-
-    // По имени
-    sortByName: () => {
-      const sortedList = cards.sort((a, b) => {
-        const firstItem = findByRegex(a.image);
-        const secondItem = findByRegex(b.image);
-        return firstItem.localeCompare(secondItem);
-      });
-      setCards([...sortedList]);
-      setCurrentPage(1);
-    },
-
-    // По размеру файла
-    sortByFileSize: () => {
-      const sortedList = cards.sort((a, b) => a.filesize - b.filesize);
-      setCards([...sortedList]);
-      setCurrentPage(1);
-    },
-
-    // По категории
-    sortByCategory: () => {
-      setCards([...cards].sort((a, b) => a.category.localeCompare(b.category)));
-      setCurrentPage(1);
-    },
   };
 
   const renders = {
@@ -64,25 +59,24 @@ export const CardView = ({ inc }) => {
 
   return (
     <Container>
-      <CardSort
-        reset={inc}
-        nameSort={callbacks.sortByName}
-        dateSort={callbacks.sortByDate}
-        sizeSort={callbacks.sortByFileSize}
-        categorySort={callbacks.sortByCategory}
-      />
-
-      <CardList
-        limit={limit}
-        currentPage={currentPage}
-        items={cards}
-        renderCard={renders.renderCard}
-      />
-      <Pages
-        totalPages={pages}
-        currentPage={currentPage}
-        changePage={callbacks.changePage}
-      />
+      {cardError && <h1>Произошла ошибка ${cardError}</h1>}
+      {isCardsLoading ? (
+        <Loader />
+      ) : (
+        <>
+          <CardSort reset={increment} setCurrentPage={setCurrentPage} />
+          <CardList
+            limit={limit}
+            currentPage={currentPage}
+            renderCard={renders.renderCard}
+          />
+          <Pages
+            totalPages={pages}
+            currentPage={currentPage}
+            changePage={callbacks.changePage}
+          />
+        </>
+      )}
     </Container>
   );
 };

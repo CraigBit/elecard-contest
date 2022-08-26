@@ -15,10 +15,11 @@ export const Layout = ({ children, setView, view }) => {
             <Form.Check
               inline
               label='Список'
-              value='treeList'
+              value='tree'
               name='changeView'
               type={'radio'}
-              id={`name-sort`}
+              role='button'
+              id='tree-view'
               onChange={() => setView('tree')}
             />
 
@@ -29,7 +30,8 @@ export const Layout = ({ children, setView, view }) => {
               value='cards'
               name='changeView'
               type={'radio'}
-              id={`name-sort`}
+              role='button'
+              id='cards-view'
               onChange={() => setView(null)}
             />
           </Form.Group>
