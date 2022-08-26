@@ -5,7 +5,7 @@ export const Pages = ({ totalPages, currentPage, changePage }) => {
   // Номера слева и справа относительно активного номера, которые остаются видимыми
   let left = Math.max(currentPage - indent, 1);
   let right = Math.min(left + indent * 2, totalPages);
-  // Корректировка когда страница в конце
+  // Корректировка, когда страница в конце
   left = Math.max(right - indent * 2, 1);
 
   let pagesArray = [];

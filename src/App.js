@@ -36,7 +36,7 @@ function App() {
   }, [resetCount]);
 
   return (
-    <Layout setView={setView}>
+    <Layout setView={setView} view={view}>
       {cardError && <h1>Произошла ошибка ${cardError}</h1>}
       {isCardsLoading ? (
         <Loader />

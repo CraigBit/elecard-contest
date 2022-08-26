@@ -1,7 +1,7 @@
 import { Form, Navbar } from 'react-bootstrap';
 import '../../App.css';
 
-export const Layout = ({ children, setView }) => {
+export const Layout = ({ children, setView, view }) => {
   return (
     <>
       <Navbar
@@ -24,6 +24,7 @@ export const Layout = ({ children, setView }) => {
 
             <Form.Check
               inline
+              checked={view === null}
               label='Карточки'
               value='cards'
               name='changeView'
