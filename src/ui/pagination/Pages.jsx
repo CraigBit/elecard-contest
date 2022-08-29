@@ -1,6 +1,7 @@
+import { useEffect } from 'react';
 import { Pagination } from 'react-bootstrap';
 
-export const Pages = ({ totalPages, currentPage, changePage }) => {
+export const Pages = ({ totalPages, currentPage, setCurrentPage }) => {
   const indent = 1;
   // Номера слева и справа относительно активного номера, которые остаются видимыми
   let left = Math.max(currentPage - indent, 1);
@@ -26,7 +27,7 @@ export const Pages = ({ totalPages, currentPage, changePage }) => {
         if (currentPage === page) {
           return (
             <Pagination.Item
-              onClick={() => changePage(page)}
+              onClick={() => setCurrentPage(page)}
               key={index}
               active>
               {page}
@@ -40,7 +41,7 @@ export const Pages = ({ totalPages, currentPage, changePage }) => {
           );
         } else {
           return (
-            <Pagination.Item onClick={() => changePage(page)} key={index}>
+            <Pagination.Item onClick={() => setCurrentPage(page)} key={index}>
               {page}
             </Pagination.Item>
           );

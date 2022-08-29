@@ -48,10 +48,10 @@ export const TreeView = () => {
               );
               return (
                 <TreeNode title={`Элемент ${index + 1}`} key={item.timestamp}>
-                  <TreeNode title={date} key={`${index + 5}-0-0-0`} />
-                  <TreeNode title={category} key={`0-${index + 5}-0-0`} />
                   <TreeNode title={img} key={`0-0-${index + 5}-0`} />
                   <TreeNode title={size} key={`0-0-0-${index + 5}`} />
+                  <TreeNode title={date} key={`${index + 5}-0-0-0`} />
+                  <TreeNode title={category} key={`0-${index + 5}-0-0`} />
                 </TreeNode>
               );
             })}

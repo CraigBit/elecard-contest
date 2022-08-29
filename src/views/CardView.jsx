@@ -15,17 +15,12 @@ export const CardView = () => {
   const [resetCount, setResetCount] = useState(0);
 
   const limit = 12;
-  const pages = Math.ceil(cards.length / limit);
+  let pages = Math.ceil(cards.length / limit);
 
   const [fetchCards, isCardsLoading, cardError] = useFetching(async () => {
     const response = await ItemService.getAll();
     setCards(response);
   });
-
-  // счетчик сброса фильтров и количества карточек
-  const increment = () => {
-    setResetCount(resetCount + 1);
-  };
 
   useEffect(() => {
     if (!localStorage.getItem('cardsArray')) {
@@ -33,22 +28,32 @@ export const CardView = () => {
     }
   }, []);
 
-  // хук реагирует на счетчик сброса, срабатывает по нажатии на кнопку
+  // реагирует на счетчик сброса, срабатывает по нажатии на кнопку
   useEffect(() => {
     if (resetCount) {
       fetchCards();
     }
   }, [resetCount]);
 
-  const callbacks = {
-    // Сменить страницу в пагинации
-    changePage: (page) => setCurrentPage(page),
+  // сменит страницу, если на последней странице удалить все карточки
+  useEffect(() => {
+    if (currentPage > pages) {
+      setCurrentPage(pages);
+    }
+  }, [currentPage, pages]);
 
+  const callbacks = {
     // Удалить карточку
-    deleteItem: (deletedItem) =>
+    deleteItem: (deletedItem) => {
       setCards(
         cards.filter((item) => item.timestamp !== deletedItem.timestamp)
-      ),
+      );
+    },
+    // счетчик сброса фильтров и количества карточек
+    increment: () => {
+      setResetCount(resetCount + 1);
+      setCurrentPage(1);
+    },
   };
 
   const renders = {
@@ -64,7 +69,10 @@ export const CardView = () => {
         <Loader />
       ) : (
         <>
-          <CardSort reset={increment} setCurrentPage={setCurrentPage} />
+          <CardSort
+            reset={callbacks.increment}
+            setCurrentPage={setCurrentPage}
+          />
           <CardList
             limit={limit}
             currentPage={currentPage}
@@ -73,7 +81,7 @@ export const CardView = () => {
           <Pages
             totalPages={pages}
             currentPage={currentPage}
-            changePage={callbacks.changePage}
+            setCurrentPage={setCurrentPage}
           />
         </>
       )}
