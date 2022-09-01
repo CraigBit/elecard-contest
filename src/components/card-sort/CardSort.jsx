@@ -1,9 +1,9 @@
 import { Form, Button } from 'react-bootstrap';
-import { useCards } from '../../context/CardsContext';
 import { findByRegex } from '../../utils/findByRegex';
+import { useDeletedCards } from '../../context/CardsContext';
 
-export const CardSort = ({ reset, setCurrentPage }) => {
-  const { cards, setCards } = useCards();
+export const CardSort = ({ reset, setCurrentPage, cards, setCards }) => {
+  const { setDeletedCards } = useDeletedCards();
 
   const callbacks = {
     // По дате
@@ -33,6 +33,13 @@ export const CardSort = ({ reset, setCurrentPage }) => {
       });
       setCards([...sortedList]);
       setCurrentPage(1);
+    },
+
+    resetAndFetch: () => {
+      if (localStorage.getItem('cardsArray')) {
+        setDeletedCards(null, 'clean');
+      }
+      reset();
     },
   };
 
@@ -85,7 +92,10 @@ export const CardSort = ({ reset, setCurrentPage }) => {
               onChange={callbacks.sortByFileSize}
             />
           </Form.Group>
-          <Button variant='primary' type='reset' onClick={reset}>
+          <Button
+            variant='primary'
+            type='reset'
+            onClick={callbacks.resetAndFetch}>
             Сброс
           </Button>
         </Form.Group>

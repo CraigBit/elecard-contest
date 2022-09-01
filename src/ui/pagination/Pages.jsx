@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import { Pagination } from 'react-bootstrap';
 
 export const Pages = ({ totalPages, currentPage, setCurrentPage }) => {

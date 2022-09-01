@@ -18,15 +18,18 @@ export function useLocalStorage(storageKey) {
     returnInitialState(storageKey)
   );
 
-  const setValue = (value) => {
+  const setValue = (value, order) => {
     try {
-      // Проверяем, что лежит в значении
-      const valueToStore =
-        value instanceof Function ? value(storedValue) : value;
-      // Сохраняем в локальное хранилище
-      window.localStorage.setItem(storageKey, JSON.stringify(valueToStore));
-      // Устанавливаем состояние
-      setStoredValue(valueToStore);
+      if (order === 'add') {
+        storedValue.push(value);
+        // Сохраняем в локальное хранилище
+        localStorage.setItem(storageKey, JSON.stringify(storedValue));
+        // Устанавливаем состояние
+        setStoredValue(storedValue);
+      } else if (order === 'clean') {
+        localStorage.removeItem(storageKey);
+        setStoredValue([]);
+      }
     } catch (error) {
       // Вывод ошибки
       console.log(error);

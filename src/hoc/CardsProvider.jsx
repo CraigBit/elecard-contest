@@ -2,13 +2,13 @@ import { CardsContext } from '../context/CardsContext';
 import { useLocalStorage } from '../hooks/useLocalStorage';
 
 export const CardsProvider = ({ children }) => {
-  const [cards, setCards] = useLocalStorage('cardsArray');
+  const [deletedCards, setDeletedCards] = useLocalStorage('cardsArray');
 
   return (
     <CardsContext.Provider
       value={{
-        cards,
-        setCards,
+        deletedCards,
+        setDeletedCards,
       }}>
       {children}
     </CardsContext.Provider>
