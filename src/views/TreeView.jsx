@@ -10,7 +10,11 @@ export const TreeView = () => {
 
   const [fetchTree, isTreeLoading, treeError] = useFetching(async () => {
     const response = await ItemService.getAll();
-    setTree(response);
+    const result = [];
+    for (let i = 0; i < response.length; i += 100) {
+      result.push(response.slice(i, i + 100));
+    }
+    setTree(result);
   });
 
   useEffect(() => {
@@ -35,23 +39,57 @@ export const TreeView = () => {
           selectable={false}
           expandAction='click'
           className='m-5'>
-          <TreeNode title='Root' key='0-0'>
+          <TreeNode title='Root' key='0-0-0-0-0-0'>
             {tree.map((item, index) => {
-              const size = item.filesize;
-              const category = item.category;
-              const date = new Date(item.timestamp).toLocaleDateString('ru-RU');
-              const path = `http://contest.elecard.ru/frontend_data/${item.image}`;
-              const img = (
-                <a href={path} target='_blank' rel='noreferrer'>
-                  <img src={path} alt='not found' style={imgStyle} />
-                </a>
-              );
+              let title;
+              if (index < 6) {
+                title = `[${index * 100}-${index * 100 + 99}]`;
+              } else {
+                title = `[${index * 100}-${index * 100 + 59}]`;
+              }
               return (
-                <TreeNode title={`Элемент ${index + 1}`} key={item.timestamp}>
-                  <TreeNode title={img} key={`0-0-${index + 5}-0`} />
-                  <TreeNode title={size} key={`0-0-0-${index + 5}`} />
-                  <TreeNode title={date} key={`${index + 5}-0-0-0`} />
-                  <TreeNode title={category} key={`0-${index + 5}-0-0`} />
+                <TreeNode title={title} key={index}>
+                  {item.map((node, index) => {
+                    const size = node.filesize;
+                    const category = node.category;
+                    const date = new Date(node.timestamp).toLocaleDateString(
+                      'ru-RU'
+                    );
+                    const path = `http://contest.elecard.ru/frontend_data/${node.image}`;
+                    const img = (
+                      <a href={path} target='_blank' rel='noreferrer'>
+                        <img src={path} alt='not found' style={imgStyle} />
+                      </a>
+                    );
+                    return (
+                      <TreeNode title={`${index}`} key={node.timestamp}>
+                        <TreeNode
+                          title={img}
+                          key={`${
+                            Date.now() + Math.random() * (99999 - 10) + 10
+                          }`}
+                        />
+                        <TreeNode
+                          title={size}
+                          key={`${
+                            Date.now() + Math.random() * (99999 - 10) + 10
+                          }`}
+                        />
+                        <TreeNode
+                          title={date}
+                          key={`${
+                            Date.now() + Math.random() * (99999 - 10) + 10
+                          }`}
+                        />
+                        <TreeNode
+                          title={category}
+                          key={`${
+                            Date.now() + Math.random() * (99999 - 10) + 10
+                          }`}
+                        />
+                      </TreeNode>
+                    );
+                  })}
                 </TreeNode>
               );
             })}
